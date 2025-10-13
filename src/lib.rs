@@ -1,14 +1,12 @@
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
-}
+use std::collections::HashMap;
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+const SYMBOLS: &str = "(){}[]<>;:.,'\"!@#%^&*-=+_`~|\\/?$";
 
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
-    }
+pub fn count_symbols(input: &str) -> HashMap<char, usize> {
+    input.chars().
+        filter(|c| SYMBOLS.contains(*c))
+        .fold(HashMap::new(), |mut acc, ch| {
+            *acc.entry(ch).or_insert(0) += 1;
+            acc
+        })
 }
