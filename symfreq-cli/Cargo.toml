@@ -6,3 +6,4 @@ edition = "2024"
 [dependencies]
 clap = { version = "4", features = ["derive"] }
 symfreq = { path = "../symfreq" }
+tabled = { version = "0.20.0", features = ["ansi"] }
