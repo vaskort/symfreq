@@ -1,6 +1,5 @@
 use ignore::Walk;
 use std::collections::HashMap;
-use std::fs;
 
 const SYMBOLS: &str = "(){}[]<>;:.,'\"!@#%^&*-=+_`~|\\/?$";
 pub const DEFAULT_EXTENSIONS: &[&str] = &["rs", "js", "jsx", "ts", "tsx"];
@@ -41,7 +40,7 @@ pub fn sorted_percentages(percentages: &HashMap<char, f64>) -> Vec<(char, f64)> 
 
 pub fn read_path<P: AsRef<std::path::Path>>(
     path: P,
-    exts: &std::collections::HashSet<&'static str>,
+    exts: &std::collections::HashSet<&str>,
 ) -> std::io::Result<String> {
     let mut collected = String::new();
     for result in Walk::new(path) {
