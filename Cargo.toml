@@ -3,6 +3,13 @@ name = "symfreq"
 version = "0.1.0"
 edition = "2024"
 
+description = "A CLI tool for analyzing symbol frequency in source code"
+license = "MIT"
+repository = "https://github.com/vaskort/symfreq"
+authors = ["Vasilis Kortsimelidis <vaskort@gmail.com>"]
+keywords = ["cli", "keyboard", "symbols", "analysis"]
+categories = ["command-line-utilities"]
+
 [dependencies]
 ignore = "0.4.23"
 clap = { version = "4", features = ["derive"] }
