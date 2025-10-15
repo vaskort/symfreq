@@ -1,6 +1,6 @@
+use clap::Parser;
 use std::fs;
 use std::process::ExitCode;
-use clap::Parser;
 use tabled::{Table, Tabled};
 
 #[derive(Parser)]
@@ -19,6 +19,10 @@ struct Row {
 
 fn main() -> ExitCode {
     let cli = Cli::parse();
+    let exts: HashSet<&str> = ["rs", "js", "jsx", "ts", "tsx"]
+        .iter()
+        .copied()
+        .collect();
 
     match fs::read_to_string(&cli.path) {
         Ok(content) => {
@@ -30,7 +34,7 @@ fn main() -> ExitCode {
                 .into_iter()
                 .map(|(char, percentage)| Row {
                     symbol: char.to_string(),
-                    percent: format!("{percentage:.2}%")
+                    percent: format!("{percentage:.2}%"),
                 })
                 .collect();
 
