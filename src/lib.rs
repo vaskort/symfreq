@@ -1,6 +1,5 @@
 use ignore::Walk;
 use std::collections::HashMap;
-use std::path::PathBuf;
 
 const SYMBOLS: &str = "(){}[]<>;:.,'\"!@#%^&*-=+_`~|\\/?$";
 pub const DEFAULT_EXTENSIONS: &[&str] = &["rs", "js", "jsx", "ts", "tsx"];
@@ -70,10 +69,15 @@ pub fn read_path<P: AsRef<std::path::Path>>(
                         } else {
                             files_failed += 1;
                         } 
+                    } else {
+                        files_skipped += 1;
                     }
                 }
             }
-            Err(err) => println!("ERROR: {}", err),
+            Err(err) => {
+                println!("ERROR: {}", err);
+            }
+                
         }
     }
 
