@@ -1,5 +1,7 @@
 # symfreq
 
+[![Crates.io](https://img.shields.io/crates/v/symfreq.svg)](https://crates.io/crates/symfreq)
+
 A CLI tool for analyzing symbol frequency in source code files.
 
 ## Motivation
@@ -8,8 +10,6 @@ Built to learn Rust while optimizing keyboard layouts for a custom split keyboar
 symbols appear most frequently in your codebase, making it easier to design efficient key placements.
 
 ## Installation
-
-Available on [crates.io](https://crates.io/crates/symfreq)
 
 ```bash
 cargo install symfreq
