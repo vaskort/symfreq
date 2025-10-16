@@ -9,6 +9,8 @@ symbols appear most frequently in your codebase, making it easier to design effi
 
 ## Installation
 
+Available on [crates.io](https://crates.io/crates/symfreq)
+
 ```bash
 cargo install symfreq
 ```
