@@ -1,5 +1,6 @@
 use ignore::Walk;
 use std::collections::HashMap;
+use std::path::PathBuf;
 
 const SYMBOLS: &str = "(){}[]<>;:.,'\"!@#%^&*-=+_`~|\\/?$";
 pub const DEFAULT_EXTENSIONS: &[&str] = &["rs", "js", "jsx", "ts", "tsx"];
@@ -38,23 +39,37 @@ pub fn sorted_percentages(percentages: &HashMap<char, f64>) -> Vec<(char, f64)> 
     values
 }
 
+pub struct ReadResult {
+    pub content: String,
+    pub files_read: usize,
+    pub files_skipped: usize,
+    pub files_failed: usize,
+}
+
 pub fn read_path<P: AsRef<std::path::Path>>(
     path: P,
     exts: &std::collections::HashSet<&str>,
-) -> std::io::Result<String> {
+) -> Result<ReadResult, std::io::Error> {
     let mut collected = String::new();
+    let mut files_read = 0;
+    let mut files_skipped = 0;
+    let mut files_failed = 0;
     for result in Walk::new(path) {
         match result {
             Ok(entry) => {
                 if entry.file_type().map_or(false, |ft| ft.is_file()) {
                     if let Some(ext) = entry.path().extension().and_then(|e| e.to_str()) {
                         if !exts.contains(&ext) {
+                            files_skipped += 1;
                             continue;
                         }
 
                         if let Ok(content) = std::fs::read_to_string(entry.path()) {
                             collected.push_str(&content);
-                        }
+                            files_read += 1;
+                        } else {
+                            files_failed += 1;
+                        } 
                     }
                 }
             }
@@ -62,5 +77,10 @@ pub fn read_path<P: AsRef<std::path::Path>>(
         }
     }
 
-    Ok(collected)
+    Ok(ReadResult {
+        content: collected,
+        files_read,
+        files_skipped,
+        files_failed,
+    })
 }

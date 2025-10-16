@@ -29,8 +29,8 @@ fn main() -> ExitCode {
     };
 
     match read_path(&cli.path, &exts) {
-        Ok(content) => {
-            let counts = count_symbols(&content);
+        Ok(read_result) => {
+            let counts = count_symbols(&read_result.content);
             let count_percentages = count_percentages(&counts);
             let sorted_percentages = sorted_percentages(&count_percentages);
 
