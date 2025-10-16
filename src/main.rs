@@ -1,6 +1,7 @@
 use std::collections::HashSet;
 use clap::Parser;
 use std::process::ExitCode;
+use colored::Colorize;
 use tabled::{Table, Tabled};
 use symfreq::{count_percentages, count_symbols, read_path, sorted_percentages, DEFAULT_EXTENSIONS};
 
@@ -41,7 +42,10 @@ fn main() -> ExitCode {
                     percent: format!("{percentage:.2}%"),
                 })
                 .collect();
-
+            println!("\nFiles processed: {} read, {} skipped, {} failed\n", 
+                     &read_result.files_read.to_string().green(), 
+                     &read_result.files_skipped.to_string().yellow(), 
+                     &read_result.files_failed.to_string().red());
             println!("{}", Table::new(rows));
             ExitCode::SUCCESS
         }
