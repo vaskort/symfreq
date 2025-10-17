@@ -11,6 +11,15 @@ symbols appear most frequently in your codebase, making it easier to design effi
 
 ## Installation
 
+### With Homebrew (macOS/Linux)
+
+```bash
+brew tap vaskort/symfreq
+brew install symfreq
+```
+
+### With Cargo
+
 ```bash
 cargo install symfreq
 ```
