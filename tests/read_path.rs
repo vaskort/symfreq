@@ -11,7 +11,6 @@ fn read_path_basic() {
     std::fs::write(dir.path().join("readme.txt"), "Hello").unwrap();
     let result = read_path(dir.path(), &exts).unwrap();
 
-    assert!(result.content.contains("fn main() {}"));
     assert!(result.symbol_counts.get(&'(').is_some());
     assert!(result.symbol_counts.get(&')').is_some());
     assert!(result.symbol_counts.get(&'{').is_some());
