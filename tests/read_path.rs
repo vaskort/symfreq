@@ -1,24 +1,26 @@
-use symfreq::{read_path, DEFAULT_EXTENSIONS};
-use tempfile::tempdir;
-use std::collections::HashSet;
 use pretty_assertions::assert_eq;
+use std::collections::HashSet;
+use symfreq::{DEFAULT_EXTENSIONS, read_path};
+use tempfile::tempdir;
 
 #[test]
 fn read_path_basic() {
-    let exts: HashSet<&str> = DEFAULT_EXTENSIONS
-        .iter()
-        .copied()
-        .collect();
+    let exts: HashSet<&str> = DEFAULT_EXTENSIONS.iter().copied().collect();
     let dir = tempdir().unwrap();
     std::fs::write(dir.path().join("test.rs"), "fn main() {}").unwrap();
     std::fs::write(dir.path().join("readme.txt"), "Hello").unwrap();
     let result = read_path(dir.path(), &exts).unwrap();
 
     assert!(result.content.contains("fn main() {}"));
+    assert!(result.symbol_counts.get(&'(').is_some());
+    assert!(result.symbol_counts.get(&')').is_some());
+    assert!(result.symbol_counts.get(&'{').is_some());
+    assert!(result.symbol_counts.get(&'}').is_some());
     assert_eq!(result.files_read, 1);
     assert_eq!(result.files_failed, 0);
     assert_eq!(result.files_skipped, 1);
 }
+
 #[test]
 fn read_path_no_extensions_found() {
     let exts = ["js"].iter().copied().collect();
@@ -26,10 +28,9 @@ fn read_path_no_extensions_found() {
     std::fs::write(dir.path().join("test.rs"), "fn main() {}").unwrap();
     let result = read_path(dir.path(), &exts).unwrap();
 
-    assert!(result.content.contains(""));
+    assert!(result.symbol_counts.is_empty());
     assert_eq!(result.files_read, 0);
     assert_eq!(result.files_skipped, 1);
-    assert_eq!(result.files_read, 0);
 }
 
 #[cfg(unix)]
@@ -63,6 +64,7 @@ fn read_path_file_without_extension() {
 
     assert_eq!(result.files_skipped, 1);
 }
+
 #[test]
 fn read_path_nonexistent_directory() {
     let exts: HashSet<&str> = ["rs"].iter().copied().collect();

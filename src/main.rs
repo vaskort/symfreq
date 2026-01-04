@@ -1,10 +1,10 @@
-use std::collections::HashSet;
 use clap::Parser;
-use std::process::ExitCode;
 use colored::Colorize;
-use tabled::{Table, Tabled};
-use symfreq::{count_percentages, count_symbols, read_path, sorted_percentages, DEFAULT_EXTENSIONS};
 use indicatif::{ProgressBar, ProgressStyle};
+use std::collections::HashSet;
+use std::process::ExitCode;
+use symfreq::{DEFAULT_EXTENSIONS, count_percentages, read_path, sorted_percentages};
+use tabled::{Table, Tabled};
 
 #[derive(Parser)]
 #[command(author, version, about)]
@@ -27,14 +27,13 @@ fn start_spinner() -> ProgressBar {
     spinner.set_style(
         ProgressStyle::default_spinner()
             .template("{spinner:.green} {msg}")
-            .unwrap()
+            .unwrap(),
     );
     spinner.set_message("Analyzing files...");
     spinner.enable_steady_tick(std::time::Duration::from_millis(100));
-    
+
     spinner
 }
-
 
 fn main() -> ExitCode {
     let cli = Cli::parse();
@@ -43,16 +42,15 @@ fn main() -> ExitCode {
     } else {
         DEFAULT_EXTENSIONS.iter().copied().collect()
     };
-    
+
     let spinner = start_spinner();
 
     let result = read_path(&cli.path, &exts);
     spinner.finish_and_clear();
-    
+
     match result {
         Ok(read_result) => {
-            let counts = count_symbols(&read_result.content);
-            let count_percentages = count_percentages(&counts);
+            let count_percentages = count_percentages(&read_result.symbol_counts);
             let sorted_percentages = sorted_percentages(&count_percentages);
 
             let rows: Vec<Row> = sorted_percentages
@@ -62,10 +60,12 @@ fn main() -> ExitCode {
                     percent: format!("{percentage:.2}%"),
                 })
                 .collect();
-            println!("\nFiles processed: {} read, {} skipped, {} failed\n", 
-                     &read_result.files_read.to_string().green(), 
-                     &read_result.files_skipped.to_string().yellow(), 
-                     &read_result.files_failed.to_string().red());
+            println!(
+                "\nFiles processed: {} read, {} skipped, {} failed\n",
+                &read_result.files_read.to_string().green(),
+                &read_result.files_skipped.to_string().yellow(),
+                &read_result.files_failed.to_string().red()
+            );
             println!("{}", Table::new(rows));
             ExitCode::SUCCESS
         }

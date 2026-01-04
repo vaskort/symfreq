@@ -4,16 +4,6 @@ use std::collections::HashMap;
 const SYMBOLS: &str = "(){}[]<>;:.,'\"!@#%^&*-=+_`~|\\/?$";
 pub const DEFAULT_EXTENSIONS: &[&str] = &["rs", "js", "jsx", "ts", "tsx"];
 
-pub fn count_symbols(input: &str) -> HashMap<char, usize> {
-    input
-        .chars()
-        .filter(|c| SYMBOLS.contains(*c))
-        .fold(HashMap::new(), |mut acc, ch| {
-            *acc.entry(ch).or_insert(0) += 1;
-            acc
-        })
-}
-
 pub fn count_percentages(chars: &HashMap<char, usize>) -> HashMap<char, f64> {
     let total: usize = chars.values().sum();
 
@@ -39,7 +29,7 @@ pub fn sorted_percentages(percentages: &HashMap<char, f64>) -> Vec<(char, f64)> 
 }
 
 pub struct ReadResult {
-    pub content: String,
+    pub symbol_counts: HashMap<char, usize>,
     pub files_read: usize,
     pub files_skipped: usize,
     pub files_failed: usize,
@@ -49,7 +39,7 @@ pub fn read_path<P: AsRef<std::path::Path>>(
     path: P,
     exts: &std::collections::HashSet<&str>,
 ) -> Result<ReadResult, std::io::Error> {
-    let mut collected = String::new();
+    let mut symbol_counts = HashMap::new();
     let mut files_read = 0;
     let mut files_skipped = 0;
     let mut files_failed = 0;
@@ -64,11 +54,15 @@ pub fn read_path<P: AsRef<std::path::Path>>(
                         }
 
                         if let Ok(content) = std::fs::read_to_string(entry.path()) {
-                            collected.push_str(&content);
+                            for ch in content.chars() {
+                                if SYMBOLS.contains(ch) {
+                                    *symbol_counts.entry(ch).or_insert(0) += 1;
+                                }
+                            }
                             files_read += 1;
                         } else {
                             files_failed += 1;
-                        } 
+                        }
                     } else {
                         files_skipped += 1;
                     }
@@ -77,12 +71,11 @@ pub fn read_path<P: AsRef<std::path::Path>>(
             Err(err) => {
                 println!("ERROR: {}", err);
             }
-                
         }
     }
 
     Ok(ReadResult {
-        content: collected,
+        symbol_counts,
         files_read,
         files_skipped,
         files_failed,
