@@ -46,18 +46,30 @@ symfreq ./src -e c,h,cpp
 
 ## Output
 
-The tool displays a table showing each symbol and its percentage frequency:
+The tool displays a summary with statistics and a color-coded table showing each symbol's frequency:
 
 ```
-┌────────┬─────────┐
-│ Symbol │ Percent │
-├────────┼─────────┤
-│ (      │ 15.23%  │
-│ )      │ 15.20%  │
-│ ,      │ 12.45%  │
-│ :      │ 8.34%   │
-└────────┴─────────┘
+Summary:
+  Total tracked symbols: 1159813
+  Unique symbols: 32
+  Files processed: 2042 read (51.3%), 1940 skipped, 0 failed
+
+┌────────┬─────────┬───────────────────────────┐
+│ Symbol │ Percent │ Distribution              │
+├────────┼─────────┼───────────────────────────┤
+│ "      │ 12.26%  │ ███░░░░░░░░░░░░░░░░░░░░░░ │
+│ (      │ 11.85%  │ ██░░░░░░░░░░░░░░░░░░░░░░░ │
+│ )      │ 11.85%  │ ██░░░░░░░░░░░░░░░░░░░░░░░ │
+│ .      │ 9.64%   │ ██░░░░░░░░░░░░░░░░░░░░░░░ │
+│ _      │ 9.19%   │ ██░░░░░░░░░░░░░░░░░░░░░░░ │
+└────────┴─────────┴───────────────────────────┘
 ```
+
+### Color Coding
+
+- **Green** - High frequency symbols (≥10%)
+- **Yellow** - Medium frequency symbols (5-10%)
+- **White** - Low frequency symbols (<5%)
 
 ## Options
 
